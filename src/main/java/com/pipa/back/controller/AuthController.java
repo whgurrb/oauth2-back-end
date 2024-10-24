@@ -3,7 +3,9 @@ package com.pipa.back.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pipa.back.dto.request.auth.IdCheckRuestDto;
+import com.pipa.back.dto.request.auth.EmailCertificationRequestDto;
+import com.pipa.back.dto.request.auth.IdCheckRequestDto;
+import com.pipa.back.dto.response.auth.EmailCertificationResponseDto;
 import com.pipa.back.dto.response.auth.IdCheckResponseDto;
 import com.pipa.back.service.AuthService;
 
@@ -24,10 +26,20 @@ public class AuthController {
 
     @PostMapping("/id-check")
     public ResponseEntity<? super IdCheckResponseDto> idCheck( 
-        @RequestBody @Valid IdCheckRuestDto dto
+        @RequestBody @Valid IdCheckRequestDto dto
     ){
         ResponseEntity<? super IdCheckResponseDto> responseBody = authService.idCheck( dto );
         return responseBody;
     }    
+
+    @PostMapping("/email-certification")
+    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification( 
+        @RequestBody @Valid EmailCertificationRequestDto dto
+    ){
+        ResponseEntity<? super EmailCertificationResponseDto> responseBody = authService.emailCertification( dto );
+        return responseBody;
+    }    
+
+
     
 }

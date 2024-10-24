@@ -7,6 +7,9 @@ import com.pipa.back.common.ResponseCode;
 import com.pipa.back.common.ResponseMessage;
 import com.pipa.back.dto.response.ResponseDto;
 
+import lombok.Getter;
+
+@Getter
 public class EmailCertificationResponseDto  extends ResponseDto {
     private EmailCertificationResponseDto(){
         super();
