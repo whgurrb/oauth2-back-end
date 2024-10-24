@@ -9,5 +9,7 @@ import com.pipa.back.entity.UserEntity;
 public interface UserRepository extends JpaRepository<UserEntity, String> {
 
     UserEntity findByUserId(String userId);
+
+    boolean existsByUserId(String userId);
     
 }
