@@ -7,4 +7,5 @@ public interface ResponseCode {
     String SIGN_IN_FAIL = "SF";
     String CERTIFICATION_FAIL = "CF";
     String DATABASE_ERROR = "DBE";
+    String MAIL_FAIL = "MF";
 }
