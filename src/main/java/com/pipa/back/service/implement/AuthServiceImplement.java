@@ -1,6 +1,8 @@
 package com.pipa.back.service.implement;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.pipa.back.common.CertificationNumber;
@@ -14,6 +16,7 @@ import com.pipa.back.dto.response.auth.EmailCertificationResponseDto;
 import com.pipa.back.dto.response.auth.IdCheckResponseDto;
 import com.pipa.back.dto.response.auth.SignUpResponseDto;
 import com.pipa.back.entity.CertificationEntity;
+import com.pipa.back.entity.UserEntity;
 import com.pipa.back.provider.EmailProvider;
 import com.pipa.back.repository.CertificationRepository;
 import com.pipa.back.repository.UserRepository;
@@ -28,6 +31,8 @@ public class AuthServiceImplement implements AuthService {
     private final CertificationRepository certificationRepository;
     private final UserRepository userRepository;
     private final EmailProvider emailProvider;
+
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto) {
@@ -102,13 +107,14 @@ public class AuthServiceImplement implements AuthService {
         try {
 
             String userId = dto.getId();
-            String email = dto.getEmail();
-            String password = dto.getPassword();
-            String certificationNumber = dto.getCertificationNumber();
-
-            /// id 중복 체크
             boolean isExistId = userRepository.existsByUserId( userId );
             if( isExistId ) return SignUpResponseDto.duplicateId();
+
+
+
+
+            String email = dto.getEmail();
+            String certificationNumber = dto.getCertificationNumber();            
         
             /// certification 체크
             CertificationEntity certificationEntity = certificationRepository.findByUserId(userId);
@@ -118,8 +124,22 @@ public class AuthServiceImplement implements AuthService {
                                 certificationEntity.getCertificationNumber().equals( certificationNumber );
             if( !isMatched ) return SignUpResponseDto.certificationFail();
 
+
+            String password = dto.getPassword();
+            String encodedPassword = passwordEncoder.encode( password );
+
+
+
             // User테이블에 저장
+            //UserEntity userEntity = new UserEntity( userId, encodedPassword, email, "app", "ROLE_USER" );
+            dto.setPassword(encodedPassword);
+            UserEntity userEntity = new UserEntity( dto );
+
+            userRepository.save(userEntity);
+
             // Certification테이블에 삭제
+            // certificationRepository.delete(certificationEntity);
+            certificationRepository.deleteByUserId(userId);
 
         } catch (Exception exception) {
             exception.printStackTrace();
