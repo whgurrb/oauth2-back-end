@@ -3,8 +3,10 @@ package com.pipa.back.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pipa.back.dto.request.auth.CheckCertificationRequestDto;
 import com.pipa.back.dto.request.auth.EmailCertificationRequestDto;
 import com.pipa.back.dto.request.auth.IdCheckRequestDto;
+import com.pipa.back.dto.response.auth.CheckCertificationResponseDto;
 import com.pipa.back.dto.response.auth.EmailCertificationResponseDto;
 import com.pipa.back.dto.response.auth.IdCheckResponseDto;
 import com.pipa.back.service.AuthService;
@@ -40,6 +42,13 @@ public class AuthController {
         return responseBody;
     }    
 
+    @PostMapping("/check-certification")
+    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification( 
+        @RequestBody @Valid CheckCertificationRequestDto dto
+    ){
+        ResponseEntity<? super CheckCertificationResponseDto> responseBody = authService.checkCertification( dto );
+        return responseBody;
+    }
 
     
 }
