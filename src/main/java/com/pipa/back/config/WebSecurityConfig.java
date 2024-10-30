@@ -14,12 +14,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.pipa.back.filter.JwtAuthenticationFilter;
+import com.pipa.back.handler.OAuthSuccessHandler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,8 +34,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final DefaultOAuth2UserService oAuth2UserService ;
+    private final  JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final  DefaultOAuth2UserService oAuth2UserService ;
+    private final  OAuthSuccessHandler oAuthSuccessHandler;
 
     @Bean
     protected SecurityFilterChain configure( HttpSecurity httpSecurity ) throws Exception {
@@ -53,6 +56,7 @@ public class WebSecurityConfig {
             .oauth2Login(oauth2 -> oauth2
                 .redirectionEndpoint( endpoint -> endpoint.baseUri("/oauth2/callback/*")) 
                 .userInfoEndpoint( endpoint -> endpoint.userService(oAuth2UserService))
+                .successHandler(oAuthSuccessHandler)
             )
             .exceptionHandling(handeling->handeling
                 .authenticationEntryPoint(new FailedAuthenticationEntryPoint() )
