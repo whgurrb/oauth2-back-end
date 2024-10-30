@@ -9,5 +9,4 @@ public class CertificationNumber {
         return certificationNumer;
     }
     
-    
 }
